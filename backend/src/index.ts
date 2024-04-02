@@ -3,6 +3,7 @@ import cors from 'cors';
 import "dotenv/config";
 import mongoose from 'mongoose';
 import myUserRoute  from "./routes/MyUserRoute";
+import restaurantRoute from "./routes/RestaurantRoutes"
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string).then(()=>{
     console.log('connected to DB!!!');
@@ -17,6 +18,7 @@ app.get("/test" , async (req: Request,res: Response)=>{
 });
 
 app.use("/api/my/user",myUserRoute);
+app.use("/api/restaurant",restaurantRoute);
 
 app.listen(7000,()=>{
     console.log("server started");
