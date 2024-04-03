@@ -45,10 +45,10 @@ to run stripe CLI:-
 <li> Method to Rate the Restaurant and Show the Ratings</li>
 
 ### For Code Quality and GitWorkFlow
-Write Unit Test Cases for the components.
-Implement SonarQube Coverage Tool for better insights into code Quality
-Better implement backend logic for more edge cases and rigorous testing
-Better and more insightful user prompts
-Integrate Git Workflow for CI/CD.
+<li>Write Unit Test Cases for the components.</li>
+<li>Implement SonarQube Coverage Tool for better insights into code Quality</li>
+<li>Better implement backend logic for more edge cases and rigorous testing</li>
+<li>Better and more insightful user prompts</li>
+<li>Integrate Git Workflow for CI/CD.</li>
 
 
