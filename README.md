@@ -43,6 +43,7 @@ to run stripe CLI:-
 <li> Better implement Cart page </li>
 <li> Add Badge Icon to show current items in the cart</li>
 <li> Method to Rate the Restaurant and Show the Ratings</li>
+<li> Upgrade React-Query to Tanstack-Query</li>
 
 ### For Code Quality and GitWorkFlow
 <li>Write Unit Test Cases for the components.</li>
