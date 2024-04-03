@@ -69,7 +69,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
 const createCheckoutSession = async (req: Request, res: Response) => {
   try {
     const checkoutSessionRequest: CheckoutSessionRequest = req.body;
-
+    console.log(req.body);
     const restaurant = await Restaurant.findById(
       checkoutSessionRequest.restaurantId
     );
@@ -91,7 +91,8 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       checkoutSessionRequest,
       restaurant.menuItems
     );
-
+    console.log('\n');
+    console.log(lineItems);
     const session = await createSession(
       lineItems,
       newOrder._id.toString(),
@@ -127,7 +128,7 @@ const createLineItems = (
     const line_item: Stripe.Checkout.SessionCreateParams.LineItem = {
       price_data: {
         currency: "inr",
-        unit_amount: menuItem.price,
+        unit_amount: menuItem.price*100,
         product_data: {
           name: menuItem.name,
         },
@@ -155,7 +156,7 @@ const createSession = async (
           display_name: "Delivery",
           type: "fixed_amount",
           fixed_amount: {
-            amount: deliveryPrice,
+            amount: deliveryPrice*100,
             currency: "inr",
           },
         },

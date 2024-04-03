@@ -1,4 +1,6 @@
 export const cuisineList = [
+    "Veg",
+    "Non Veg",
     "American",
     "BBQ",
     "Breakfast",

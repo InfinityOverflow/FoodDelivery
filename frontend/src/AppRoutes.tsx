@@ -7,6 +7,7 @@ import ProtectedRoute from "./auth/ProtectedRoute"
 import SearchPage from "./pages/SearchPage"
 import DetailPage from "./pages/DetailPage"
 import OrderStatusPage from "./pages/OrderStatusPage"
+import CartPage from "./pages/CartPage"
 
 export const AppRoutes=()=>{
     return(
@@ -21,6 +22,13 @@ export const AppRoutes=()=>{
             </Layout>
           }
         />    
+        <Route
+          path="/cart-page" element={
+            <Layout>
+              <CartPage/>
+            </Layout>
+          }
+        />
             <Route path="/user-profile" element ={<Layout>
                 <UserProfilePage/>
             </Layout>}/>

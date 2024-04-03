@@ -8,6 +8,7 @@ export type User = {
   };
   
   export type MenuItems = {
+    quantity: any;
     _id: string;
     name: string;
     price: number;

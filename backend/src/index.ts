@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import myUserRoute  from "./routes/MyUserRoute";
 import restaurantRoute from "./routes/RestaurantRoutes"
 import orderRoute from "./routes/OrderRoute";
+import cartRoute from "./routes/CartRoute"
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string).then(()=>{
     console.log('connected to DB!!!');
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use("/api/my/user",myUserRoute);
 app.use("/api/restaurant",restaurantRoute);
 app.use("/api/order", orderRoute);
+app.use("/api/my/cart",cartRoute);
 
 app.listen(7000,()=>{
     console.log("server started");
