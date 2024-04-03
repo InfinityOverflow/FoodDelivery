@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { Request, Response } from "express";
 import Restaurant, { MenuItemType } from "../models/restaurant";
 import Order from "../models/order";
+import User from "../models/user";
 
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string);
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
@@ -52,12 +53,12 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
 
   if (event.type === "checkout.session.completed") {
     const order = await Order.findById(event.data.object.metadata?.orderId);
-
-    if (!order) {
+    const currentUser=await User.findById(order?.user);
+    const currentRestaurant= await Restaurant.findById(order?.restaurant);
+    if (!order || !currentRestaurant || !currentUser) {
       return res.status(404).json({ message: "Order not found" });
     }
-    console.log(order.restaurant)
-    const currentRestaurant= await Restaurant.findById(order.restaurant);
+    currentUser.carts=[];
     currentRestaurant?.menuItems.forEach((menuItem)=>{
       const item =order.cartItems.find((item)=>item.id.toString()===menuItem._id.toString());
       if(item)
@@ -66,7 +67,8 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
 
     order.totalAmount = event.data.object.amount_total;
     order.status = "paid";
-    await currentRestaurant?.save();
+    await currentUser.save();
+    await currentRestaurant.save();
     await order.save();
   }
 
@@ -88,7 +90,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
     const newOrder = new Order({
       restaurant: restaurant,
       user: req.userId,
-      status: "placed",
+      status: "Payment Left",
       deliveryDetails: checkoutSessionRequest.deliveryDetails,
       cartItems: checkoutSessionRequest.cartItems,
       createdAt: new Date(),

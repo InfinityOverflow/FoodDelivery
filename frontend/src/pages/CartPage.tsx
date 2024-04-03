@@ -43,7 +43,6 @@ const CartPage = () => {
     };
 
     const data = await createCheckoutSession(checkoutData);
-    await deleteMyCart();
     window.location.href = data.url;
   };
 
