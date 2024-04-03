@@ -126,3 +126,39 @@ export const useDeleteMyCart= ()=>{
         isLoading,
       };
 };
+export const useDeleteItem= ()=>{
+  const { getAccessTokenSilently } = useAuth0();
+  const deleteItemRequest=async(menuItem:MenuItems)=>{
+      const accessToken = await getAccessTokenSilently();
+
+      const response = await fetch(`${API_BASE_URL}/api/my/cart/${menuItem._id}`, {
+          method: "DELETE",
+          headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+
+      if (!response.ok) {
+          throw new Error("Failed to delete Item");
+      }
+      toast.success("Removed Successfully");
+      reset();
+        return response.json();
+  }
+  const {
+      mutateAsync: deleteItem,
+      isLoading,
+      error,
+      reset,
+    } = useMutation(deleteItemRequest);
+  
+    if (error) {
+      toast.error(error.toString());
+      reset();
+    }
+  
+    return {
+      deleteItem,
+      isLoading,
+    };
+};

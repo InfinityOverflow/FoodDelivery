@@ -1,19 +1,19 @@
 import { useDeleteMyCart, useGetMyCart } from "@/api/CartApi";
 import { useEffect,useState } from "react";
 import { useGetRestaurant } from "@/api/RestaurantApi";
-import { CartItem } from "./DetailPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MenuItems } from "@/types";
 import CheckoutButton from "@/components/CheckoutButton";
 import { useCreateCheckoutSession } from "@/api/OrderApi";
 import { UserFormData } from "@/forms/user-profile-form/UserProfileForm";
-import { Separator } from "@radix-ui/react-separator";
+import { Trash } from "lucide-react";
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const {data,isLoading}=useGetMyCart();
-    const {restaurant,isLoading:isLoadingRestaurant}=useGetRestaurant(data?.restaurantId);
-    const {deleteMyCart,isLoading:isDeleting}=useDeleteMyCart();
+    const {restaurant}=useGetRestaurant(data?.restaurantId);
+    const {deleteMyCart}=useDeleteMyCart();
+    // const {deleteItem,isLoading:isReducing}=useDeleteItem()
     const { createCheckoutSession, isLoading: isCheckoutLoading } =
     useCreateCheckoutSession();
   useEffect(()=>{
@@ -47,25 +47,41 @@ const CartPage = () => {
     window.location.href = data.url;
   };
 
+//   const removeFromCart = async(cartItem: CartItem) => {
+//     console.log(cartItem);
+//     await deleteItem(cartItem);
+//   };
+
   return(
     <>
     <div className="grid gap-5">
     {
         cartItems?.length>0?
         (cartItems.map((menuItem:MenuItems)=>{
-            return (<Card className="cursor-pointer" >
+            return (<Card>
             <CardHeader>
               <CardTitle>{menuItem.name}</CardTitle>
             </CardHeader>
-            <CardContent className="font-bold">
+            <div className="flex">
+            <CardContent className="flex-1 font-bold">
             ₹{(menuItem.price).toFixed(2)}
             </CardContent>
+            <CardContent className="flex gap-4 font-bold">
+              {menuItem.quantity}
+            </CardContent>
+            </div>
           </Card>)
-        })):<p className="bold">Cart is Empty</p>
+        })):<p className="font-bold">Cart is Empty</p>
     }
     
     <div className="text-right">
-        
+              <Trash
+                className="cursor-pointer"
+                color="red"
+                size={20}
+                onClick={async() => {await deleteMyCart();
+                setCartItems([])}}
+              />
     <CheckoutButton
                 disabled={cartItems?.length === 0}
                 onCheckout={onCheckout}

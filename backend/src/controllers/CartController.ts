@@ -29,15 +29,25 @@ const updateCart = async (req: Request, res: Response) => {
       if(!restaurant)
       return res.status(404).json({ message: "Restaurant not found" });
       if(user.restaurantId && restaurantId !== user.restaurantId)
-      return res.status(500).json({message: `Restaurant diff user has ${user.restaurantId}`});
-      else if(user.restaurantId===undefined)
+      return res.status(500).json({message: `Cart has pending order from following Restaurant Id ${user.restaurantId}`});
+      else if(user.restaurantId===undefined || user.restaurantId==="")
       user.restaurantId=restaurantId;
       const newCartItems = cartItems.filter((item:MenuItemType) =>
         restaurant.menuItems.some((menuItem) => item._id.toString() === menuItem._id.toString()));
 
       console.log(newCartItems);
-      const updatedCartItems = [...user.carts, ...newCartItems];
-      user.carts=updatedCartItems;
+      user.carts=user.carts.map((cartItem)=>{
+        const matchingItem = newCartItems.find((newCartItem:MenuItemType) => newCartItem._id.toString() === cartItem._id.toString());
+        if (matchingItem) {
+         return { ...cartItem, quantity: cartItem.quantity + matchingItem.quantity };
+       } 
+       else {
+        return cartItem;}
+      })
+      const uniqueNewCartItems = newCartItems.filter(
+        (newCartItem:MenuItemType) => !user.carts.some((cartItem) => cartItem._id === newCartItem._id)
+      );
+      user.carts.push(...uniqueNewCartItems);
       await user.save();
   
       res.send(user);
@@ -55,9 +65,38 @@ const deleteCart=async(req:Request,res:Response)=>{
     user.carts=[];
     await user.save();
     res.status(200).json({message: "Cart Empty"})
+    
+}
+
+const deleteItem=async(req:Request,res:Response)=>{
+  const user = await User.findById(req.userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  let menuItemId = req.params.menuItemId;
+  
+  menuItemId=menuItemId.toString();
+  console.log(menuItemId);
+  const itemIndex=user.carts.findIndex((item)=>{
+    return item._id.toString()===menuItemId;
+  });
+  if(itemIndex!==-1)
+  {
+    user.carts[itemIndex].quantity=user.carts[itemIndex].quantity-1;
+  }
+  else if(itemIndex===-1)
+  {
+    return res.status(500).json({message:"Item Not Found"});
+  }
+  
+  user.carts=user.carts.filter((item)=>item.quantity>0
+  )
+  await user.save();
+  return res.status(201).send(user);
 }
 export default {
     getCartDetails,
     updateCart,
     deleteCart,
+    deleteItem
 }

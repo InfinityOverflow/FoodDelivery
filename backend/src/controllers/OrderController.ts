@@ -56,10 +56,17 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
+    console.log(order.restaurant)
+    const currentRestaurant= await Restaurant.findById(order.restaurant);
+    currentRestaurant?.menuItems.forEach((menuItem)=>{
+      const item =order.cartItems.find((item)=>item.id.toString()===menuItem._id.toString());
+      if(item)
+      menuItem.quantity-=item.quantity;
+    })
 
     order.totalAmount = event.data.object.amount_total;
     order.status = "paid";
-
+    await currentRestaurant?.save();
     await order.save();
   }
 
@@ -99,7 +106,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       restaurant.deliveryPrice,
       restaurant._id.toString()
     );
-
+    
     if (!session.url) {
       return res.status(500).json({ message: "Error creating stripe session" });
     }
@@ -108,7 +115,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
     res.json({ url: session.url });
   } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: error.raw.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -120,9 +127,13 @@ const createLineItems = (
     const menuItem = menuItems.find(
       (item) => item._id.toString() === cartItem.menuItemId.toString()
     );
-
+    
     if (!menuItem) {
       throw new Error(`Menu item not found: ${cartItem.menuItemId}`);
+    }
+    if(menuItem.quantity===0 || menuItem.quantity<parseInt(cartItem.quantity))
+    {
+      throw new Error(`${menuItem.name} is Out of Stock`);
     }
 
     const line_item: Stripe.Checkout.SessionCreateParams.LineItem = {

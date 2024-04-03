@@ -14,5 +14,6 @@ router.put(
     validateCartUpdationRequest,
     CartController.updateCart
   );
-router.delete("/",jwtCheck,jwtParse,CartController.deleteCart)
+router.delete("/",jwtCheck,jwtParse,CartController.deleteCart);
+router.delete("/:menuItemId",jwtCheck,jwtParse,CartController.deleteItem)
 export default router;
