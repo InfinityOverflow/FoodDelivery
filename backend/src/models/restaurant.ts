@@ -8,12 +8,12 @@ const menuItemSchema = new mongoose.Schema({
   },
   name: { type: String, required: true },
   price: { type: Number, required: true },
+  quantity: { type: Number,required: true, default: 0},
 });
 
 export type MenuItemType = InferSchemaType<typeof menuItemSchema>;
 
 const restaurantSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   restaurantName: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },

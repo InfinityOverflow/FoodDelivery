@@ -5,6 +5,9 @@ import AuthCallbackPage from "./pages/AuthCallbackPage"
 import UserProfilePage from "./pages/UserProfilePage"
 import ProtectedRoute from "./auth/ProtectedRoute"
 import SearchPage from "./pages/SearchPage"
+import DetailPage from "./pages/DetailPage"
+import OrderStatusPage from "./pages/OrderStatusPage"
+import CartPage from "./pages/CartPage"
 
 export const AppRoutes=()=>{
     return(
@@ -12,6 +15,20 @@ export const AppRoutes=()=>{
             <Route path="/" element ={<Layout showHero={true}><HomePage/></Layout>}/>
             <Route path="/auth-callback" element ={<AuthCallbackPage/>}/>
             <Route element={<ProtectedRoute/>}>
+            <Route
+          path="/order-status" element={
+            <Layout>
+              <OrderStatusPage />
+            </Layout>
+          }
+        />    
+        <Route
+          path="/cart-page" element={
+            <Layout>
+              <CartPage/>
+            </Layout>
+          }
+        />
             <Route path="/user-profile" element ={<Layout>
                 <UserProfilePage/>
             </Layout>}/>
@@ -19,6 +36,7 @@ export const AppRoutes=()=>{
             <Route path="/search/:city" element ={<Layout showHero={false}>
             <SearchPage/>
             </Layout>}/>
+            <Route path="/detail/:restaurantId" element={<Layout showHero={false}> <DetailPage /> </Layout>}/>
             <Route path="*" element ={<Navigate to="/"/>}/>
         </Routes>
     )

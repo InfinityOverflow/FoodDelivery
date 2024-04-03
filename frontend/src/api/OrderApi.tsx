@@ -70,8 +70,13 @@ export const useCreateCheckoutSession = () => {
       }
     );
 
-    if (!response.ok) {
+    if (!response.ok && response.status!=500) {
       throw new Error("Unable to create checkout session");
+    }
+    if(response.status===500)
+    {
+      const {message}=await response.json();
+      throw new Error(`${(message)}`);
     }
 
     return response.json();

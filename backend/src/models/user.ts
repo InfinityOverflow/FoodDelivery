@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
   country: {
     type: String,
   },
+  carts:[],
+  restaurantId:{
+    type: String,
+  }
 });
 
 const User = mongoose.model("User", userSchema);

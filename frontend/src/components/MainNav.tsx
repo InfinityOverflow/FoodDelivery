@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "./ui/button";
 import UsernameMenu from "./UsernameMenu";
 import { Link } from "react-router-dom";
+import { ShoppingCartIcon } from "lucide-react";
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0();
@@ -12,6 +13,9 @@ const MainNav = () => {
         <>
           <Link to="/order-status" className="font-bold hover:text-orange-500">
             Order Status
+          </Link> 
+          <Link to="/cart-page" className="font-bold hover:text-orange-500">
+          <ShoppingCartIcon/>
           </Link>
           <UsernameMenu />
         </>
