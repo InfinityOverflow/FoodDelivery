@@ -7,9 +7,10 @@ import CheckoutButton from "@/components/CheckoutButton";
 import { useCreateCheckoutSession } from "@/api/OrderApi";
 import { UserFormData } from "@/forms/user-profile-form/UserProfileForm";
 import { Trash } from "lucide-react";
+import { CartItem } from "./DetailPage";
 
 const CartPage = () => {
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const {data,isLoading}=useGetMyCart();
     const {restaurant}=useGetRestaurant(data?.restaurantId);
     const {deleteMyCart}=useDeleteMyCart();
@@ -17,7 +18,8 @@ const CartPage = () => {
     const { createCheckoutSession, isLoading: isCheckoutLoading } =
     useCreateCheckoutSession();
   useEffect(()=>{
-    setCartItems(data?.cartItems);
+    if(data)
+    setCartItems(data.cartItems);
     console.log(cartItems);
   },[isLoading,data]);
 
